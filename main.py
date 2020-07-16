@@ -106,8 +106,6 @@ def pub_data_MAST():
     device.publish(json.dumps(payload), tag)
     print("--------------------------------------------------------")
 
-
-
 def pub_data_Ubidots():
     print('---- publish data UBIDOTS ----')
     tag_ubi = "UBIDOTS"
@@ -124,7 +122,7 @@ try:
         soil = adc.read(config.soil_pin) # soil moisture
         light = adc.read(config.light_pin) # light sensor
         
-        if soil<config.soglia_soil:
+        if soil > config.soglia_soil:
             irrigation_status = 1
             digitalWrite(config.led_irr, HIGH)
         else:
@@ -145,10 +143,10 @@ try:
             
             if hum > config.soglia_hum:
                 fan_status = 1
-                pwm.write(config.fan_pin,2,1)
+                pwm.write(config.fan_pin,2,1) # accendo ventola
             else:
                 fan_status = 0
-                pwm.write(config.fan_pin,0,0)
+                pwm.write(config.fan_pin,0,0) # spengo ventola
             print("fan_status", fan_status)
             print("--------------------------------------------------------")
         except Exception as e:
