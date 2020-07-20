@@ -20,7 +20,6 @@ from zdm import zdm  # Zerynth Device Manager
 
 from genann import genann # libreria intelligenza artificiale
 
-
 ######## END IMPORT LIBRARIES ######## 
 
 
@@ -31,7 +30,6 @@ streams.serial()
 
 pinMode(config.led_irr,OUTPUT) # irrigation LED
 pinMode(config.fan_pin,OUTPUT) # fan module
-
 
 try:
     # Setup weather sensor 
@@ -49,10 +47,11 @@ except Exception as e:
 # create an ANN object
 ann = genann.ANN()
 
-# set the layers: 2 inputs, 1 output, 1 hidden layer of 2 neurons
-ann.create(2,1,1,2)
-weights = [-1.777,-5.734,-6.029,-4.460,-3.261,-3.172,2.444,-6.581,5.826]
-# set the weights of a pretrained XOR model (https://github.com/codeplea/genann/blob/master/example/xor.ann)
+# set the layers: 5 inputs, 1 output, 1 hidden layer of 5 neurons
+ann.create(5,1,1,5)
+weights = config.weights
+print(weights)
+# set the weights
 ann.set_weights(weights)
 
 ######## END ARTIFICIAL INTELLIGENCE
@@ -118,25 +117,9 @@ def pub_data_Ubidots():
 try:
     while True:
        
-        # Acquisizione dati da sensori
-        soil = adc.read(config.soil_pin) # soil moisture
-        light = adc.read(config.light_pin) # light sensor
-        
-        if soil > config.soglia_soil:
-            irrigation_status = 1
-            digitalWrite(config.led_irr, HIGH)
-        else:
-            irrigation_status = 0
-            digitalWrite(config.led_irr, LOW)
-
-        print("--------------------------------------------------------")
-        print("Soil Humidity:",soil)
-        print("Light:", light)
-        print("irrigation_status", irrigation_status)
-        print("--------------------------------------------------------")
-        
         try:
             temp, hum, pres = weather.get_values()
+            print("--------------------------------------------------------")
             print("Temperature:", temp, "C")
             print("Humidity:", hum, "%")
             print("Pressure:", pres, "hPa")
@@ -151,7 +134,44 @@ try:
             print("--------------------------------------------------------")
         except Exception as e:
             print("weather sensor err", e)
+            
+
+        # Acquisizione dati da sensori
+        soil = adc.read(config.soil_pin) # soil moisture
+        light = adc.read(config.light_pin) # light sensor
         
+        # if soil > config.soglia_soil:
+        #     irrigation_status = 1
+        #     digitalWrite(config.led_irr, HIGH)
+        # else:
+        #     irrigation_status = 0
+        #     digitalWrite(config.led_irr, LOW)
+        
+        # NEURAL NETWORK
+        
+        input_set = [soil, temp, light, hum, pres] # define the inputs
+        
+        input_set = [k*1.0 for k in input_set] # ann.run() wants float
+
+        print("Input set", input_set)
+        
+        # run the network
+        out = ann.run(input_set)
+        print("Result ANN",out)
+        
+        if out[0] > 0.45:
+            irrigation_status = 1
+            digitalWrite(config.led_irr, HIGH)
+        else:
+            irrigation_status = 0
+            digitalWrite(config.led_irr, LOW)
+            
+        
+        print("--------------------------------------------------------")
+        print("Soil Humidity:",soil)
+        print("Light:", light)
+        print("irrigation_status", irrigation_status)
+        print("--------------------------------------------------------")
         
         try:
             pub_data_Ubidots()
@@ -162,8 +182,9 @@ try:
             pub_data_MAST()
         except Exception as e:
             print("pub data MAST error: ",e)
-        
-        sleep(1000)
+
+
+        sleep(10000)
         
 except Exception as e:
     print("main loop error: ",e)
