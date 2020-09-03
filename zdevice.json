@@ -1,1 +1,16 @@
-
+{
+ "devinfo": {
+    "device_id": "",
+    "mode": "",
+    "key_id": 0,
+    "key_type": ""
+  },
+  "endpoint": {
+    "host": "",
+    "port": 0,
+    "mode": ""
+  },
+  "prvkey": "",
+  "cacert": "",
+  "created_at": ""
+}
