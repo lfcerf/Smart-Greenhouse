@@ -201,7 +201,7 @@ try:
         print("--------------------------------------------------------")
         print("Soil Humidity:", soil)
         print("Light:", light)
-        print("Servo Status", servo_status)
+        print("Servo Status:", servo_status)
         print("--------------------------------------------------------")
         
             
