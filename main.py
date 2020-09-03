@@ -54,7 +54,7 @@ def check_connection():
 def pub_data_ZDM():
     global device
     tag = "ZDM"
-    payload = {"temperature": temp, "humidity": hum, "pressure": pres, 'soil': soil, 'light': light, 'irrigation_status': servo_status, "fan_status": fan_status, "tag_dataset": tag_dataset}
+    payload = {"temperature": temp, "humidity": hum, "pressure": pres, 'soil': soil, 'light': light, 'servo_status': servo_status, "fan_status": fan_status, "tag_dataset": tag_dataset}
     try: 
         device.publish(payload, tag)
         print("--------------------------------------------------------")
