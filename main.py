@@ -197,19 +197,7 @@ try:
             servo_status = 0
             digitalWrite(config.led_irr, LOW)
             MyServo.moveToDegree(0)
-        
-        print("--------------------------------------------------------")
-        print("Soil Humidity:", soil)
-        print("Light:", light)
-        print("Servo Status:", servo_status)
-        print("--------------------------------------------------------")
-        
-            
-        tag_dataset = digitalRead(config.button_pin)
-        print("--------------------------------------------------------")
-        print("Dataset Tag: ", tag_dataset)
-        print("--------------------------------------------------------")
-        
+
         # NEURAL NETWORK
             
         '''input_set =  [soil, temp, light, hum, pres] # define the inputs
@@ -230,7 +218,19 @@ try:
             servo_status = 0
             digitalWrite(config.led_irr, LOW)
             MyServo.moveToDegree(0)'''
+        
+        print("--------------------------------------------------------")
+        print("Soil Humidity:", soil)
+        print("Light:", light)
+        print("Servo Status:", servo_status)
+        print("--------------------------------------------------------")
+        
             
+        tag_dataset = digitalRead(config.button_pin)
+        print("--------------------------------------------------------")
+        print("Dataset Tag: ", tag_dataset)
+        print("--------------------------------------------------------")
+                
         # publish data on ZDM
         if cont_pub_zdm >= config.t_pub_zdm:
             # check status of wifi connection
